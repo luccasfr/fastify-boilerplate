@@ -1,5 +1,6 @@
-import { PrismaClient } from '@/generated/prisma'
+
 import { prismaInstance } from '@/lib/prisma-instance'
+import { PrismaClient } from "@prisma/client"
 
 /**
  * Base service class that provides access to the Prisma client

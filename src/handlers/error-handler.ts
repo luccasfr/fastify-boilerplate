@@ -1,6 +1,8 @@
 import ApiError from '@/errors/api-error'
-import { PrismaClientKnownRequestError } from '@/generated/prisma/runtime/library'
-import { PrismaClientUnknownRequestError } from '@prisma/client/runtime/library'
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from '@prisma/client/runtime/library'
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
 
@@ -81,6 +83,23 @@ const handleDatabaseError = (
 }
 
 /**
+ * Type guard to check if error is a Fastify validation error
+ */
+const isFastifyValidationError = (
+  error: unknown
+): error is FastifyError & {
+  validation: Array<{ message: string; instancePath: string }>
+  validationContext: string
+} => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 'FST_ERR_VALIDATION'
+  )
+}
+
+/**
  * Global error handler for the Fastify application. Processes different types of errors
  * and returns standardized responses with appropriate status codes.
  *
@@ -99,6 +118,17 @@ const errorHandler = (
   _: FastifyRequest | null,
   reply: FastifyReply
 ): void => {
+  if (isFastifyValidationError(error)) {
+    reply.status(400).send({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Validation error',
+      context: error.validationContext,
+      issues: error.validation,
+    })
+    return
+  }
+
   if (error instanceof ZodError) {
     reply.status(400).send({
       statusCode: 400,

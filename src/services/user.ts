@@ -1,4 +1,4 @@
-import { Prisma, User } from '@/generated/prisma'
+import { Prisma, User } from '@prisma/client'
 import PrismaService from './prisma'
 
 /**
