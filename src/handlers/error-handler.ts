@@ -4,6 +4,10 @@ import {
   PrismaClientUnknownRequestError,
 } from '@prisma/client/runtime/library'
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
+import {
+  hasZodFastifySchemaValidationErrors,
+  isResponseSerializationError,
+} from 'fastify-type-provider-zod'
 import { ZodError } from 'zod'
 
 /**
@@ -83,23 +87,6 @@ const handleDatabaseError = (
 }
 
 /**
- * Type guard to check if error is a Fastify validation error
- */
-const isFastifyValidationError = (
-  error: unknown
-): error is FastifyError & {
-  validation: Array<{ message: string; instancePath: string }>
-  validationContext: string
-} => {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    error.code === 'FST_ERR_VALIDATION'
-  )
-}
-
-/**
  * Global error handler for the Fastify application. Processes different types of errors
  * and returns standardized responses with appropriate status codes.
  *
@@ -110,23 +97,39 @@ const isFastifyValidationError = (
  * - Generic errors
  *
  * @param error - The error to be handled
- * @param _ - Fastify request object (unused but required by Fastify)
+ * @param request - Fastify request object (can be null in some cases)
  * @param reply - Fastify reply object used to send the response
+ * @returns void
  */
 const errorHandler = (
   error: FastifyError | ZodError | ApiError | Error,
-  _: FastifyRequest | null,
+  request: FastifyRequest | null,
   reply: FastifyReply
 ): void => {
-  if (isFastifyValidationError(error)) {
-    reply.status(400).send({
+  if (hasZodFastifySchemaValidationErrors(error)) {
+    reply.code(400).send({
+      error: 'Validation Error',
+      message: "Request doesn't match the schema",
       statusCode: 400,
-      error: 'Bad Request',
-      message: 'Validation error',
-      context: error.validationContext,
-      issues: error.validation,
+      details: {
+        issues: error.validation,
+        method: request?.method || 'Unknown',
+        url: request?.url || 'Unknown',
+      },
     })
-    return
+  }
+
+  if (isResponseSerializationError(error)) {
+    reply.code(500).send({
+      error: 'Internal Server Error',
+      message: "Response doesn't match the schema",
+      statusCode: 500,
+      details: {
+        issues: error.cause.issues,
+        method: request?.method || 'Unknown',
+        url: request?.url || 'Unknown',
+      },
+    })
   }
 
   if (error instanceof ZodError) {
