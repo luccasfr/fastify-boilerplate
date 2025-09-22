@@ -1,0 +1,12 @@
+{
+  "watch": [
+    "src",
+    ".env"
+  ],
+  "ext": "ts,js,json,env",
+  "exec": "tsx --require tsconfig-paths/register src/index.ts",
+  "ignore": [
+    "node_modules",
+    "dist"
+  ]
+}
