@@ -1,4 +1,4 @@
-import { userOutputSchema } from './user'
+import { userOutputSchema } from './user.js'
 
 /**
  * Collection of schema definitions used throughout the application

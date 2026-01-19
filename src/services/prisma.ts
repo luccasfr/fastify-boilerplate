@@ -1,5 +1,5 @@
-import { prismaInstance } from '@/lib/prisma-instance'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../../generated/prisma/client.js'
+import { prismaInstance } from '../lib/prisma-instance.js'
 
 /**
  * Base service class that provides access to the Prisma client

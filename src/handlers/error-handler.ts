@@ -1,14 +1,15 @@
-import ApiError from '@/errors/api-error'
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-} from '@prisma/client/runtime/library'
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import {
   hasZodFastifySchemaValidationErrors,
   isResponseSerializationError,
 } from 'fastify-type-provider-zod'
 import { ZodError } from 'zod'
+import { Prisma } from '../../generated/prisma/client.js'
+import ApiError from '../errors/api-error.js'
+
+const { PrismaClientKnownRequestError, PrismaClientUnknownRequestError } =
+  Prisma
+type PrismaKnownError = Prisma.PrismaClientKnownRequestError
 
 /**
  * Type for standardized error responses
@@ -27,7 +28,7 @@ type ErrorResponse = {
  * @param error - The Prisma client error with code P2003
  * @returns Standardized error response object
  */
-const handleP2003 = (error: PrismaClientKnownRequestError): ErrorResponse => {
+const handleP2003 = (error: PrismaKnownError): ErrorResponse => {
   const regex = /[A-Za-z]+_([A-Za-z]+)_[A-Za-z]+/
   const meta = error.meta as { field_name?: string } | undefined
   const fieldName = meta?.field_name
@@ -50,9 +51,7 @@ const handleP2003 = (error: PrismaClientKnownRequestError): ErrorResponse => {
  * @param error - The Prisma client error to handle
  * @returns Standardized error response object
  */
-const handleDatabaseError = (
-  error: PrismaClientKnownRequestError
-): ErrorResponse => {
+const handleDatabaseError = (error: PrismaKnownError): ErrorResponse => {
   switch (error.code) {
     case 'P2002': {
       const uniqueFieldMatch = error.message.match(

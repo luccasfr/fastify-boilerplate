@@ -4,7 +4,7 @@
   "_version": "22.0.0",
   "compilerOptions": {
     "types": ["node"],
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "module": "nodenext",
@@ -13,11 +13,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "moduleResolution": "nodenext",
+    "baseUrl": "."
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "generated/**/*", "prisma.config.ts"]
 }

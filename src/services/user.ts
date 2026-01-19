@@ -1,5 +1,5 @@
-import { Prisma, User } from '@prisma/client'
-import PrismaService from './prisma'
+import { Prisma, User } from '../../generated/prisma/client.js'
+import PrismaService from './prisma.js'
 
 /**
  * Service for user-related database operations

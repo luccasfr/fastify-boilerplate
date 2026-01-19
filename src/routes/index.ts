@@ -1,5 +1,5 @@
-import { userRoutes } from '@/routes/user'
-import { FastifyTypedInstance } from '@/types/fastify'
+import { FastifyTypedInstance } from '../types/fastify.js'
+import { userRoutes } from './user.js'
 
 export async function routes(app: FastifyTypedInstance) {
   app.register(userRoutes, { prefix: '/users' })

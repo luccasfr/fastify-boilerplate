@@ -4,7 +4,7 @@
     ".env"
   ],
   "ext": "ts,js,json,env",
-  "exec": "tsx --require tsconfig-paths/register src/index.ts",
+  "exec": "tsx --env-file=.env src/index.ts",
   "ignore": [
     "node_modules",
     "dist"

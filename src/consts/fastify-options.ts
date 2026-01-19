@@ -1,5 +1,3 @@
-import packageJson from '@/../package.json'
-import schemas from '@/model/schemas'
 import { FastifyCorsOptions, FastifyCorsOptionsDelegate } from '@fastify/cors'
 import { FastifyJWTOptions } from '@fastify/jwt'
 import { SwaggerOptions } from '@fastify/swagger'
@@ -14,6 +12,8 @@ import {
   jsonSchemaTransform,
 } from 'fastify-type-provider-zod'
 import { IncomingMessage, Server, ServerResponse } from 'node:http'
+import packageJson from '../../package.json' with { type: 'json' }
+import schemas from '../model/schemas.js'
 
 //==============================================================================
 // Constants for API Documentation
