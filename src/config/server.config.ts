@@ -1,3 +1,4 @@
+import { schemas } from '@/model/schemas'
 import { FastifyCorsOptions, FastifyCorsOptionsDelegate } from '@fastify/cors'
 import { FastifyJWTOptions } from '@fastify/jwt'
 import { SwaggerOptions } from '@fastify/swagger'
@@ -13,7 +14,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { IncomingMessage, Server, ServerResponse } from 'node:http'
 import packageJson from '../../package.json' with { type: 'json' }
-import schemas from '../model/schemas.js'
+import { env } from './env.config'
 
 //==============================================================================
 // Constants for API Documentation
@@ -38,12 +39,8 @@ const VERSION = packageJson.version
 // JWT Configuration
 //==============================================================================
 
-/**
- * Configuration options for Fastify JWT plugin
- * @description Sets up JWT authentication with the provided secret and expiration time
- */
 export const fastifyJwtOptions: FastifyRegisterOptions<FastifyJWTOptions> = {
-  secret: process.env.JWT_SECRET as string,
+  secret: env.JWT_SECRET,
   sign: {
     expiresIn: '12h',
   },
@@ -53,15 +50,10 @@ export const fastifyJwtOptions: FastifyRegisterOptions<FastifyJWTOptions> = {
 // CORS Configuration
 //==============================================================================
 
-/**
- * Configuration options for Fastify CORS plugin
- * @description Defines allowed origins, methods and headers for cross-origin requests
- */
 export const fastifyCorsOptions: FastifyRegisterOptions<
   FastifyCorsOptions | FastifyCorsOptionsDelegate
 > = {
   origin: '*',
-  // Avoid using '*' in production, specify allowed origins instead
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
@@ -70,10 +62,6 @@ export const fastifyCorsOptions: FastifyRegisterOptions<
 // Swagger Documentation Configuration
 //==============================================================================
 
-/**
- * Configuration options for Fastify Swagger plugin
- * @description Sets up OpenAPI documentation with JWT authentication
- */
 export const fastifySwaggerOptions: FastifyRegisterOptions<SwaggerOptions> = {
   openapi: {
     info: {
@@ -105,10 +93,6 @@ export const fastifySwaggerOptions: FastifyRegisterOptions<SwaggerOptions> = {
   }),
 }
 
-/**
- * Configuration options for Fastify Swagger UI plugin
- * @description Sets the route prefix for the Swagger UI documentation
- */
 export const fastifySwaggerUiOptions: FastifyRegisterOptions<FastifySwaggerUiOptions> =
   {
     logo: {
@@ -125,10 +109,6 @@ export const fastifySwaggerUiOptions: FastifyRegisterOptions<FastifySwaggerUiOpt
 // Logger Configuration
 //==============================================================================
 
-/**
- * Environment-specific logger configurations
- * @description Different logger settings based on NODE_ENV
- */
 const envToLogger = {
   development: {
     transport: {
@@ -147,15 +127,11 @@ const envToLogger = {
 // Fastify Server Options
 //==============================================================================
 
-/**
- * Main Fastify server configuration options
- * @description Sets up the logger based on the current environment
- */
 export const fastifyOptions:
   | FastifyHttpOptions<
       Server<typeof IncomingMessage, typeof ServerResponse>,
       FastifyBaseLogger
     >
   | undefined = {
-  logger: envToLogger[process.env.NODE_ENV as keyof typeof envToLogger] ?? true,
+  logger: envToLogger[env.NODE_ENV] ?? true,
 }

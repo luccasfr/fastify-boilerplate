@@ -1,16 +1,10 @@
-import { userOutputSchema } from './user.js'
+import type { ZodTypeAny } from "zod"
+import { userOutputSchema } from './user'
 
 /**
- * Collection of schema definitions used throughout the application
- * @description Central repository of Zod schemas
- *
- * These schemas are registered with the Swagger generator to provide
- * comprehensive API documentation for all data models used in the application.
+ * Output schemas registered as OpenAPI components
+ * Add new model output schemas here to make them available as $ref in Swagger
  */
 export const schemas = {
   User: userOutputSchema,
-  // Add other schemas here as needed
-  // Example: Product: productOutputSchema,
-}
-
-export default schemas
+} as const satisfies Record<string, ZodTypeAny>

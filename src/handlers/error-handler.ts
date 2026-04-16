@@ -4,8 +4,8 @@ import {
   isResponseSerializationError,
 } from 'fastify-type-provider-zod'
 import { ZodError } from 'zod'
-import { Prisma } from '../../generated/prisma/client.js'
-import ApiError from '../errors/api-error.js'
+import { Prisma } from '../../generated/prisma/client'
+import ApiError from '@/errors/api-error'
 
 const { PrismaClientKnownRequestError, PrismaClientUnknownRequestError } =
   Prisma

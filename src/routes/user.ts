@@ -1,11 +1,11 @@
-import { idSchema } from '../model/base.js'
+import { idSchema } from '@/model/base'
 import {
   userInputSchema,
   userOutputSchema,
   userQuerySchema,
-} from '../model/user.js'
-import { UserService } from '../services/user.js'
-import { FastifyTypedInstance } from '../types/fastify.js'
+} from '@/model/user'
+import { UserService } from '@/services/user'
+import { FastifyTypedInstance } from '@/types/fastify'
 
 export async function userRoutes(app: FastifyTypedInstance) {
   const userService = new UserService()

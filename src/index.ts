@@ -1,51 +1,9 @@
-import 'dotenv/config'
+import { env } from './config/env.config'
+import { app } from './lib/fastify-instance'
 
-import {
-  fastifyCorsOptions,
-  fastifyJwtOptions,
-  fastifyOptions,
-  fastifySwaggerOptions,
-  fastifySwaggerUiOptions,
-} from './consts/fastify-options.js'
-// import authHandler from "@/handlers/auth-handler";
-import fastifyCors from '@fastify/cors'
-import fastifyJwt from '@fastify/jwt'
-import { fastifySwagger } from '@fastify/swagger'
-import { fastifySwaggerUi } from '@fastify/swagger-ui'
-import { fastify } from 'fastify'
-import {
-  serializerCompiler,
-  validatorCompiler,
-} from 'fastify-type-provider-zod'
-import errorHandler from './handlers/error-handler.js'
-import { routes } from './routes/index.js'
-
-const DEFAULT_PORT = '5000'
-const DEFAULT_HOST = '0.0.0.0'
-
-const app = fastify(fastifyOptions)
-
-app.setValidatorCompiler(validatorCompiler)
-app.setSerializerCompiler(serializerCompiler)
-
-app.register(fastifyCors, fastifyCorsOptions)
-app.register(fastifyJwt, fastifyJwtOptions)
-
-app.register(fastifySwagger, fastifySwaggerOptions)
-app.register(fastifySwaggerUi, fastifySwaggerUiOptions)
-
-// app.addHook("onRequest", authHandler);
-app.setErrorHandler(errorHandler)
-
-app.register(routes)
-
-app.listen(
-  {
-    port: Number.parseInt(process.env.PORT || DEFAULT_PORT),
-    host: process.env.HOST || DEFAULT_HOST,
-  },
-  (err, address) => {
-    if (err) throw err
-    app.log.info(`Docs available at ${address}/docs`)
-  }
-)
+await app.ready()
+await app.listen({
+  host: env.HOST,
+  port: Number(env.PORT),
+})
+app.log.info(`Docs available at /docs`)
