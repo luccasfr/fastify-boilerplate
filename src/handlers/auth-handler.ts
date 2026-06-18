@@ -15,13 +15,14 @@ export default async function authHandler(
   reply: FastifyReply
 ): Promise<void> {
   try {
-    if (request.url.startsWith('/docs')) return
+    if (request.url.startsWith('/docs') || request.url.startsWith('/health'))
+      return
     await request.jwtVerify()
-  } catch (error) {
+  } catch {
     reply.status(401).send({
       statusCode: 401,
       error: 'Unauthorized',
-      message: error instanceof Error ? error.message : 'Authentication failed',
+      message: 'Authentication failed',
     })
   }
 }

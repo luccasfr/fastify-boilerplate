@@ -52,14 +52,16 @@
   },
   "pnpm": {
     "overrides": {
-      "fast-jwt": ">=6.2.1",
+      "fast-jwt": ">=6.2.4",
+      "fast-uri": ">=3.1.2",
+      "@fastify/static": ">=9.1.1",
       "yaml": ">=2.8.3",
       "defu": ">=6.1.5",
       "@hono/node-server": ">=1.19.13",
       "picomatch@2.3.1": "2.3.2",
       "picomatch@4.0.3": "4.0.4",
-      "brace-expansion": ">=5.0.5",
-      "hono": ">=4.12.14"
+      "brace-expansion": ">=5.0.6",
+      "hono": ">=4.12.25"
     }
   },
   "_moduleAliases": {

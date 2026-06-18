@@ -16,7 +16,7 @@ This boilerplate includes:
 
 - **Fastify** - High-performance web framework
 - **Fastify Swagger** - OpenAPI documentation
-- **Fastify CORS** - Cross-Origin Resource Sharing plugin
+- **Fastify CORS** - Cross-Origin Resource Sharing plugin with an environment-based allowlist
 - **Fastify JWT** - JSON Web Token authentication
 - **Pino & Pino Pretty** - High-performance logging
 - **Prisma** - Modern database ORM
@@ -44,16 +44,19 @@ cp .env.example .env
 pnpm migrate
 ```
 
-4. Enable JWT authentication (optional):
+4. Configure browser origins allowed to call the API:
 
-```ts
-// Uncomment these lines in index.ts to enable authentication:
-import authHandler from '@/handlers/authHandler'
-
-fastify.addHook('onRequest', authHandler)
+```bash
+CORS_ORIGINS="http://localhost:3000,https://app.example.com"
 ```
 
-4. Start the development server:
+`CORS_ORIGINS` is required when `NODE_ENV=production`.
+
+5. Authenticate protected routes:
+
+All routes except `/health` and `/docs` require a Bearer JWT signed with `JWT_SECRET`.
+
+6. Start the development server:
 
 ```bash
 pnpm dev

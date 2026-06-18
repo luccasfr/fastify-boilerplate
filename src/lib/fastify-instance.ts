@@ -15,6 +15,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
+import authHandler from '@/handlers/auth-handler'
 import errorHandler from '@/handlers/error-handler'
 import { routes } from '@/routes/index'
 
@@ -28,6 +29,7 @@ app.register(fastifyCors, fastifyCorsOptions)
 app.register(fastifyJwt, fastifyJwtOptions)
 app.register(fastifySwagger, fastifySwaggerOptions)
 app.register(fastifySwaggerUi, fastifySwaggerUiOptions)
+app.addHook('onRequest', authHandler)
 
 app.register(routes)
 

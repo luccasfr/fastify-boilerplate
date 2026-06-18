@@ -11,7 +11,26 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32, {
     message: 'JWT_SECRET must be at least 32 characters long',
   }),
+  CORS_ORIGINS: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .map((origin) => origin.trim())
+            .filter(Boolean)
+        : []
+    ),
   DATABASE_URL: z.string().default('file:./dev.db'),
+}).superRefine((env, context) => {
+  if (env.NODE_ENV === 'production' && env.CORS_ORIGINS.length === 0) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'CORS_ORIGINS must be set in production',
+      path: ['CORS_ORIGINS'],
+    })
+  }
 })
 
 const parseEnv = () => {

@@ -1,5 +1,5 @@
 import { schemas } from '@/model/schemas'
-import { FastifyCorsOptions, FastifyCorsOptionsDelegate } from '@fastify/cors'
+import { FastifyCorsOptions } from '@fastify/cors'
 import { FastifyJWTOptions } from '@fastify/jwt'
 import { SwaggerOptions } from '@fastify/swagger'
 import { FastifySwaggerUiOptions } from '@fastify/swagger-ui'
@@ -51,9 +51,9 @@ export const fastifyJwtOptions: FastifyRegisterOptions<FastifyJWTOptions> = {
 //==============================================================================
 
 export const fastifyCorsOptions: FastifyRegisterOptions<
-  FastifyCorsOptions | FastifyCorsOptionsDelegate
+  FastifyCorsOptions
 > = {
-  origin: '*',
+  origin: env.CORS_ORIGINS.length > 0 ? env.CORS_ORIGINS : false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
